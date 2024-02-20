@@ -10,21 +10,22 @@ public class PlayerObject : MonoBehaviour
     private float horizontal = 0.0f;
     private bool jump = false;
     private bool isFacingRight = true;
-    private bool isGrounded = false;
+    [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private Animator animator;
     [SerializeField] private SpriteRenderer sr;
 
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>(); // Get the Rigidbody2D component
+    }
+
     void Update()
     {
-        horizontal = Input.GetAxis("Horizontal") * playerMoveSpeed;
-        animator.SetFloat("PlayerSpeed", Mathf.Abs(horizontal));
+        horizontal = Input.GetAxis("Horizontal");
 
-        if ((isFacingRight && horizontal < 0.0f) || (!isFacingRight && horizontal > 0.0f))
-        {
-            Flip();
-        }
+        animator.SetFloat("PlayerSpeed", Mathf.Abs(horizontal));
 
         if (Input.GetButtonDown("Jump") && IsGrounded())
         {
@@ -34,27 +35,28 @@ public class PlayerObject : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Vector3 movement = new Vector3(horizontal, 0f, 0f);
-        transform.position += movement * Time.fixedDeltaTime;
+        rb.velocity = new Vector2(horizontal * playerMoveSpeed, rb.velocity.y);
 
         if (jump)
         {
-            GetComponent<Rigidbody2D>().AddForce(new Vector2(0f, jumpingPower), ForceMode2D.Impulse);
+            rb.AddForce(new Vector2(0f, jumpingPower), ForceMode2D.Impulse);
             jump = false;
+        }
+
+        if ((isFacingRight && horizontal < 0.0f) || (!isFacingRight && horizontal > 0.0f))
+        {
+            Flip();
         }
     }
 
     private bool IsGrounded()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
-        return isGrounded;
+        return Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
     }
 
     private void Flip()
     {
         isFacingRight = !isFacingRight;
-        Vector3 theScale = transform.localScale;
-        theScale.x *= -1;
-        transform.localScale = theScale;
+        sr.flipX = !isFacingRight;
     }
 }
