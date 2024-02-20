@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerObject : MonoBehaviour
 {
-    public float playerMoveSpeed = 5.0f;
+    public float playerMoveSpeed = 1.0f;
     public float jumpingPower = 8.0f;
 
     private float horizontal = 0.0f;
@@ -23,7 +23,7 @@ public class PlayerObject : MonoBehaviour
 
     void Update()
     {
-        horizontal = Input.GetAxis("Horizontal");
+        horizontal = Input.GetAxisRaw("Horizontal");
 
         animator.SetFloat("PlayerSpeed", Mathf.Abs(horizontal));
 
