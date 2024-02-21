@@ -19,7 +19,7 @@ public class PlayerObject : MonoBehaviour
 
     void Start()
     {
-        rb = GetComponent<Rigidbody2D>(); // Get the Rigidbody2D component
+        rb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
@@ -28,20 +28,16 @@ public class PlayerObject : MonoBehaviour
 
         animator.SetFloat("PlayerSpeed", Mathf.Abs(horizontal));
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && IsGrounded())
         {
             jump = true;
+            animator.SetBool("IsJumping", true);
         }
 
         if (Input.GetButtonDown("Space"))
         {
             space = true;
         }
-
-        // Update the Jump animation parameter based on the isJumping variable
-        animator.SetBool("Jump", jump);
-
-        animator.SetBool("Space", space);
     }
 
     private void FixedUpdate()
@@ -52,16 +48,15 @@ public class PlayerObject : MonoBehaviour
         {
             rb.AddForce(new Vector2(0f, jumpingPower), ForceMode2D.Impulse);
             jump = false;
-            animator.SetBool("IsJumping", true);
         }
-
 
         if ((isFacingRight && horizontal < 0.0f) || (!isFacingRight && horizontal > 0.0f))
         {
             Flip();
         }
 
-        if (!IsGrounded()) {
+        if (IsGrounded())
+        {
             animator.SetBool("IsJumping", false);
         }
 
@@ -70,9 +65,8 @@ public class PlayerObject : MonoBehaviour
 
     private bool IsGrounded()
     {
-        return Physics2D.OverlapCircle(groundCheck.position, 0.1f, groundLayer);
+        return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
     }
-
 
     private void Flip()
     {
