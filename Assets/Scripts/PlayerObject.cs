@@ -9,7 +9,6 @@ public class PlayerObject : MonoBehaviour
 
     private float horizontal = 0.0f;
     private bool jump = false;
-    private bool space = false;
     private bool isFacingRight = true;
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private Transform groundCheck;
@@ -36,9 +35,12 @@ public class PlayerObject : MonoBehaviour
 
         if (Input.GetButtonDown("Space"))
         {
-            space = true;
+            animator.SetTrigger("Disappear");
         }
+
+        animator.SetBool("Grounded", IsGrounded());
     }
+
 
     private void FixedUpdate()
     {
@@ -59,8 +61,6 @@ public class PlayerObject : MonoBehaviour
         {
             animator.SetBool("IsJumping", false);
         }
-
-        space = false;
     }
 
     private bool IsGrounded()
