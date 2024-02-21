@@ -74,3 +74,5 @@ public class PlayerObject : MonoBehaviour
         sr.flipX = !isFacingRight;
     }
 }
+
+// Reference: Brackeys Unity Tutorials on youtube
